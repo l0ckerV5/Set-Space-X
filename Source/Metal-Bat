@@ -1,0 +1,40 @@
+-- Function to create a tool
+local function createTool(name)
+    local tool = Instance.new("Tool")
+    tool.Name = name
+    tool.RequiresHandle = false  -- Set to true if you will add a handle
+    
+    -- Adding a script to the tool for example purposes
+    local toolScript = Instance.new("Script")
+    toolScript.Source = [[
+        print("Tool '" .. script.Parent.Name .. "' equipped")
+    ]]
+    toolScript.Parent = tool
+    
+    return tool
+end
+
+-- Create tools with specified names
+local toolNames = {"Homerun", "Beatdown", "Grand Slam", "Foul Ball"}
+
+local tools = {}
+for _, name in ipairs(toolNames) do
+    table.insert(tools, createTool(name))
+end
+
+-- Function to give tools to a player
+local function giveToolsToPlayer(player)
+    local backpack = player:WaitForChild("Backpack")
+    for _, tool in ipairs(tools) do
+        local clonedTool = tool:Clone()
+        clonedTool.Parent = backpack
+    end
+end
+
+-- Connect to PlayerAdded event
+game.Players.PlayerAdded:Connect(giveToolsToPlayer)
+
+-- Ensure any existing players get the tools if the script is reloaded
+for _, player in ipairs(game.Players:GetPlayers()) do
+    giveToolsToPlayer(player)
+end
